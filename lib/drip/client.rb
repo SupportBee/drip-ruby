@@ -81,7 +81,10 @@ module Drip
           f.basic_auth api_key, ""
         end
 
-        f.response :json, :content_type => /\bjson$/
+        # f.response :json, :content_type => /\bjson$/
+
+        # works with Faraday 0.7:
+        f.use FaradayMiddleware::ParseJson, :content_type => /\bjson$/
       end
     end
   end
