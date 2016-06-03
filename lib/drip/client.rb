@@ -31,6 +31,9 @@ module Drip
         connection.get do |req|
           req.url url
           req.params = options
+          req.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
+          req.headers['Content-Type'] = content_type
+          req.headers['Accept'] = "*/*"
         end
       end
     end
@@ -40,6 +43,9 @@ module Drip
         connection.post do |req|
           req.url url
           req.body = options.to_json
+          req.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
+          req.headers['Content-Type'] = content_type
+          req.headers['Accept'] = "*/*"
         end
       end
     end
@@ -49,6 +55,9 @@ module Drip
         connection.put do |req|
           req.url url
           req.body = options.to_json
+          req.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
+          req.headers['Content-Type'] = content_type
+          req.headers['Accept'] = "*/*"
         end
       end
     end
@@ -58,6 +67,9 @@ module Drip
         connection.delete do |req|
           req.url url
           req.body = options.to_json
+          req.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
+          req.headers['Content-Type'] = content_type
+          req.headers['Accept'] = "*/*"
         end
       end
     end
@@ -70,9 +82,6 @@ module Drip
     def connection
       @connection ||= Faraday.new(url: "https://api.getdrip.com/v2/") do |f|
         f.adapter :net_http
-        f.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
-        f.headers['Content-Type'] = content_type
-        f.headers['Accept'] = "*/*"
 
         if access_token
           f.headers['Authorization'] = "Bearer #{access_token}"
