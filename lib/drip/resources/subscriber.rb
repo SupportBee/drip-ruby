@@ -8,8 +8,7 @@ module Drip
     end
 
     def attribute_keys
-      %i{id status email custom_fields tags time_zone
-        utc_offset visitor_uuid created_at href}
+      %w{id status email custom_fields tags time_zone utc_offset visitor_uuid created_at href}.map(&:to_sym)
     end
   end
 end

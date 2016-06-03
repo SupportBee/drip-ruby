@@ -7,7 +7,7 @@ module Drip
     end
 
     def attribute_keys
-      %i{code attribute message}
+      %w{code attribute message}.map(&:to_sym)
     end
   end
 end
