@@ -70,7 +70,7 @@ module Drip
     def connection
       @connection ||= Faraday.new do |f|
         f.adapter :net_http
-        f.url_prefix = "https://api.getdrip.com/v2/"
+        f.url = "https://api.getdrip.com/v2/"
         f.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
         f.headers['Content-Type'] = content_type
         f.headers['Accept'] = "*/*"
