@@ -31,9 +31,6 @@ module Drip
         connection.get do |req|
           req.url url
           req.params = options
-          req.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
-          req.headers['Content-Type'] = content_type
-          req.headers['Accept'] = "*/*"
         end
       end
     end
@@ -43,9 +40,6 @@ module Drip
         connection.post do |req|
           req.url url
           req.body = options.to_json
-          req.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
-          req.headers['Content-Type'] = content_type
-          req.headers['Accept'] = "*/*"
         end
       end
     end
@@ -55,9 +49,6 @@ module Drip
         connection.put do |req|
           req.url url
           req.body = options.to_json
-          req.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
-          req.headers['Content-Type'] = content_type
-          req.headers['Accept'] = "*/*"
         end
       end
     end
@@ -67,9 +58,6 @@ module Drip
         connection.delete do |req|
           req.url url
           req.body = options.to_json
-          req.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
-          req.headers['Content-Type'] = content_type
-          req.headers['Accept'] = "*/*"
         end
       end
     end
@@ -80,21 +68,25 @@ module Drip
     end
 
     def connection
-      @connection ||= Faraday.new(url: "https://api.getdrip.com/v2/") do |f|
-        f.adapter :net_http
-        # f.response :json, :content_type => /\bjson$/
+      @connection ||= initialize_connection
+    end
 
-        # works with Faraday 0.7:
+    def initialize_connection
+      conn ||= Faraday.new(url: "https://api.getdrip.com/v2/") do |f|
+        f.adapter :net_http
         f.use FaradayMiddleware::ParseJson, :content_type => /\bjson$/
       end
 
+      conn.headers['Content-Type'] = content_type
+      conn.headers['Accept'] = "*/*"
+
       if access_token
-        @connection.headers['Authorization'] = "Bearer #{access_token}"
+        conn.headers['Authorization'] = "Bearer #{access_token}"
       else
-        @connection.basic_auth api_key, ""
+        conn.basic_auth api_key, ""
       end
 
-      @connection
+      conn
     end
   end
 end
