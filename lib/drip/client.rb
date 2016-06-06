@@ -73,21 +73,26 @@ module Drip
     end
 
     def connection
-      @connection ||= Faraday.new do |f|
+      @connection ||= initialize_connection
+    end
+
+    def initialize_connection
+      conn = Faraday.new(url: "https://api.getdrip.com/v2/") do |f|
         f.adapter :net_http
-        f.url_prefix = "https://api.getdrip.com/v2/"
-        f.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION}"
-        f.headers['Content-Type'] = content_type
-        f.headers['Accept'] = "*/*"
-
-        if access_token
-          f.headers['Authorization'] = "Bearer #{access_token}"
-        else
-          f.basic_auth api_key, ""
-        end
-
-        f.response :json, :content_type => /\bjson$/
+        f.use FaradayMiddleware::ParseJson, content_typy: /\bjson$/
       end
+
+      conn.headers['User-Agent'] = "Drip Ruby v#{Drip::VERSION} fork:pranav7"
+      conn.headers['Content-Type'] = content_type
+      conn.headers['Accept'] = "*/*"
+
+      if access_token
+        conn.headers['Authorization'] = "Bearer #{access_token}"
+      else
+        conn.basic_auth api_key, ""
+      end
+
+      conn
     end
   end
 end
