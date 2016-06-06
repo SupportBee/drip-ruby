@@ -82,18 +82,19 @@ module Drip
     def connection
       @connection ||= Faraday.new(url: "https://api.getdrip.com/v2/") do |f|
         f.adapter :net_http
-
-        if access_token
-          f.headers['Authorization'] = "Bearer #{access_token}"
-        else
-          f.basic_auth api_key, ""
-        end
-
         # f.response :json, :content_type => /\bjson$/
 
         # works with Faraday 0.7:
         f.use FaradayMiddleware::ParseJson, :content_type => /\bjson$/
       end
+
+      if access_token
+        @connection.headers['Authorization'] = "Bearer #{access_token}"
+      else
+        @connection.basic_auth api_key, ""
+      end
+
+      @connection
     end
   end
 end
